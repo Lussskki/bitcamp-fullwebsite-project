@@ -6,10 +6,10 @@ import cors from 'cors'
 const {Pool} = pg
 
 const pool = new Pool ({
-    'user':'postgres',
+    'user':'<insert your user>',
     'host':'localhost',
     'database':'movies',
-    'password':'1324',
+    'password':'i<insert your password>',
     'port': 5432
 })
 
