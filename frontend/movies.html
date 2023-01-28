@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies list</title>
+    <style>
+        img {
+            max-width: 150px;
+        }
+        label {
+            display: block;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form action="http://localhost:3000/" method="post" id="create-movie-form">
+    <label for="title">
+        Title
+        <input type="text" name="title" id="title">
+    </label>
+    <label for="director">
+        Director
+        <input type="text" name="director" id="director">
+    </label>
+    <label for="genre">
+        Genre
+        <input type="text" name="genre" id="genre">
+    </label>
+    <label for="release-date">
+        Release Date
+        <input type="text" name="release_data" id="release_data">
+    </label>    <label for="cover_image_url">
+        Cover image
+        <input type="text" name="cover_image_url" id="cover_image_url">
+    </label>
+        <input type="submit" name="submit" id="submit">
+   </form>
+
+
+    <ul id="movies-list"></ul>
+
+<script src="./client.js"></script>
+<script src="./template.js"></script>   
+<script>
+    async function main(){
+        const movies = await getMovies()
+
+        let renderedMovieTemplate = ''
+        movies.forEach(movie => {
+             renderedMovieTemplate += movieTemplate(movie)
+});
+            document.getElementById('movies-list')
+                    .innerHTML = renderedMovieTemplate
+             console.log(movies)
+    }
+    const createMovieFormat = document
+                                    .getElementById('create-movie-form')
+    createMovieFormat.addEventListener('submit', (event)=>{
+        event.preventDefault()
+
+        const movie = {
+            title:document.getElementById('title').value,
+            director:document.getElementById('director').value,
+            genre:document.getElementById('genre').value,
+            release_data:document.getElementById('release_data').value,
+            cover_image_url:document.getElementById('cover_image_url').value,
+        }
+        const response = fetch('http://localhost:3000',{
+            method:'POST',
+            body: JSON.stringify(movie),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type':'application/json'
+            }
+        })
+        response.then(async (result)=>{
+            
+            const responseBody = await result.json()
+            movie.id = responseBody.id
+
+            const moviesListElement = document.getElementById('movies-list')
+            moviesListElement.insertAdjacentHTML('afterbegin',movieTemplate(movie))
+        })
+    })
+
+    const deleteMovieAction = (element,id) => {
+        const answer = window.prompt(`Are you Sure?`,'no')
+        
+        if(answer === 'yes'){
+            deleteMovie(id)
+            element.parentElement.closest('li').remove()
+        }
+         
+         
+    } 
+
+
+  main()
+</script>     
+</body>
+</html>
